@@ -70,6 +70,7 @@ void stream_input_handle_mmotion(stream_input_t *input, const SDL_MouseMotionEve
     } else if (app_get_mouse_relative() && event->which != SDL_TOUCH_MOUSEID) {
         LiSendMouseMoveEvent((short) event->xrel, (short) event->yrel);
     } else {
+        return;
         LiSendMousePositionEvent((short) event->x, (short) event->y, (short) input->session->display_width,
                                  (short) input->session->display_height);
     }
