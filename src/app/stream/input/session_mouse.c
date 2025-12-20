@@ -34,7 +34,12 @@ void stream_input_handle_mbutton(stream_input_t *input, const SDL_MouseButtonEve
             return;
     }
     if (event->which == SDL_TOUCH_MOUSEID) {
-        return;
+        if (LiGetHostFeatureFlags() & LI_FF_PEN_TOUCH_EVENTS) {
+            // Don't send mouse events from touch devices if the host supports pen/touch events
+            return;
+        }
+        LiSendMousePositionEvent((short) event->x, (short) event->y, (short) input->session->display_width,
+                                 (short) input->session->display_height);
     }
     LiSendMouseButtonEvent(event->state == SDL_PRESSED ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE,
                            button);
@@ -42,7 +47,7 @@ void stream_input_handle_mbutton(stream_input_t *input, const SDL_MouseButtonEve
 
 void stream_input_handle_mwheel(stream_input_t *input, const SDL_MouseWheelEvent *event) {
     (void) input;
-    if (event->which == SDL_TOUCH_MOUSEID) {
+    if (event->which == SDL_TOUCH_MOUSEID && LiGetHostFeatureFlags() & LI_FF_PEN_TOUCH_EVENTS) {
         // Don't send mouse events from touch devices if the host supports pen/touch events
         return;
     }
@@ -55,11 +60,10 @@ void stream_input_handle_mwheel(stream_input_t *input, const SDL_MouseWheelEvent
 }
 
 void stream_input_handle_mmotion(stream_input_t *input, const SDL_MouseMotionEvent *event, bool hw_mouse) {
-    return;
     if (input->view_only) {
         return;
     }
-    if (event->which == SDL_TOUCH_MOUSEID) {
+    if (event->which == SDL_TOUCH_MOUSEID && LiGetHostFeatureFlags() & LI_FF_PEN_TOUCH_EVENTS) {
         // Don't send mouse events from touch devices if the host supports pen/touch events
         return;
     }
@@ -71,7 +75,6 @@ void stream_input_handle_mmotion(stream_input_t *input, const SDL_MouseMotionEve
     } else if (app_get_mouse_relative() && event->which != SDL_TOUCH_MOUSEID) {
         LiSendMouseMoveEvent((short) event->xrel, (short) event->yrel);
     } else {
-        return;
         LiSendMousePositionEvent((short) event->x, (short) event->y, (short) input->session->display_width,
                                  (short) input->session->display_height);
     }

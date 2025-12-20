@@ -9,7 +9,7 @@ screens. It works on LG webOS powered TVs, and Raspberry Pi running Raspbian.
 
 * High performance streaming for webOS
 * UI optimized for large screen and remote controller
-* Supports up to 4 controllers 
+* Supports up to 4 controllers
 * Easy to port to other OSes (Now runs on macOS, Arch, Debian, Raspbian and Windows)
 
 ## Screenshots
