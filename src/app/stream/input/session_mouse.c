@@ -55,6 +55,7 @@ void stream_input_handle_mwheel(stream_input_t *input, const SDL_MouseWheelEvent
 }
 
 void stream_input_handle_mmotion(stream_input_t *input, const SDL_MouseMotionEvent *event, bool hw_mouse) {
+    return;
     if (input->view_only) {
         return;
     }
