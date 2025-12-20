@@ -1,6 +1,8 @@
 #include "stream/input/session_input.h"
 
 void stream_input_handle_touch(const stream_input_t *input, const SDL_TouchFingerEvent *event) {
+    // acabou!
+    return;
     if (input->view_only) {
         return;
     }
