@@ -57,6 +57,7 @@ typedef struct session_config_t {
     STREAM_CONFIGURATION stream;
     bool sops;
     bool view_only;
+    bool disable_touch;
     bool local_audio;
     bool hardware_mouse;
     bool vmouse;

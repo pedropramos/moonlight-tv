@@ -4,6 +4,9 @@ void stream_input_handle_touch(const stream_input_t *input, const SDL_TouchFinge
     if (input->view_only) {
         return;
     }
+    if (input->disable_touch) {
+        return;
+    }
     uint8_t type;
     switch (event->type) {
         case SDL_FINGERDOWN:

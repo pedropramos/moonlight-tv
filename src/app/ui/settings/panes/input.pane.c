@@ -11,6 +11,8 @@ typedef struct input_pane_t {
     lv_obj_t *absmouse_toggle;
     lv_obj_t *absmouse_hint;
     lv_obj_t *deadzone_label;
+    lv_obj_t *disable_touch_toggle;
+    lv_obj_t *disable_touch_hint;
 } input_pane_t;
 
 static lv_obj_t *create_obj(lv_fragment_t *self, lv_obj_t *view);
@@ -22,6 +24,10 @@ static void hwmouse_state_update_cb(lv_event_t *e);
 
 static void hwmouse_state_update(input_pane_t *pane);
 #endif
+
+static void viewonly_state_update_cb(lv_event_t *e);
+
+static void viewonly_state_update(input_pane_t *pane);
 
 static void update_deadzone_label(input_pane_t *pane);
 
@@ -43,11 +49,18 @@ static lv_obj_t *create_obj(lv_fragment_t *self, lv_obj_t *container) {
     lv_obj_set_layout(view, LV_LAYOUT_FLEX);
     lv_obj_set_flex_flow(view, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(view, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
-    pref_checkbox(view, locstr("View-only mode"), &app_configuration->viewonly, false);
+    lv_obj_t *viewonly_toggle = pref_checkbox(view, locstr("View-only mode"), &app_configuration->viewonly, false);
+    lv_obj_add_event_cb(viewonly_toggle, viewonly_state_update_cb, LV_EVENT_VALUE_CHANGED, pane);
     pref_desc_label(view, locstr("Don't send mouse, keyboard or gamepad input to host computer."), false);
 
     pref_checkbox(view, locstr("Capture system keys"), &app_configuration->syskey_capture, false);
     pref_desc_label(view, locstr("Capture and send system keys (e.g. Meta/Win key) to host computer."), false);
+
+    pane->disable_touch_toggle = pref_checkbox(view, locstr("Disable touchscreen input"), &app_configuration->disable_touch, false);
+    pane->disable_touch_hint = pref_desc_label(view,
+        locstr("Don't send touchscreen input to host computer.\n"
+               "This can be used to disable the DualShock 4 touchpad from moving the mouse cursor on the host computer."),
+        false);
 
     pref_header(view, locstr("Mouse"));
 
@@ -86,6 +99,7 @@ static lv_obj_t *create_obj(lv_fragment_t *self, lv_obj_t *container) {
     hwmouse_state_update(pane);
 #endif
     update_deadzone_label(pane);
+    viewonly_state_update(pane);
     return view;
 }
 
@@ -115,4 +129,20 @@ static void update_deadzone_label(input_pane_t *pane) {
 static void on_deadzone_changed(lv_event_t *e) {
     input_pane_t *pane = (input_pane_t *) lv_event_get_user_data(e);
     update_deadzone_label(pane);
+}
+
+static void viewonly_state_update_cb(lv_event_t *e) {
+    input_pane_t *pane = (input_pane_t *) lv_event_get_user_data(e);
+    viewonly_state_update(pane);
+}
+
+static void viewonly_state_update(input_pane_t *pane) {
+    if (app_configuration->viewonly) {
+        lv_obj_add_state(pane->disable_touch_toggle, LV_STATE_DISABLED);
+        lv_label_set_text(pane->disable_touch_hint, locstr("Disable touchscreen input is implied when \"View-only mode\" is enabled."));
+    } else {
+        lv_obj_clear_state(pane->disable_touch_toggle, LV_STATE_DISABLED);
+        lv_label_set_text(pane->disable_touch_hint, locstr("Don't send touchscreen input to host computer.\n"
+                                                           "This can be used to disable the DualShock 4 touchpad from moving the mouse cursor on the host computer."));
+    }
 }

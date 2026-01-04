@@ -254,6 +254,7 @@ void session_config_init(app_t *app, session_config_t *config, const SERVER_DATA
     config->hardware_mouse = app_config->hardware_mouse;
     config->local_audio = app_config->localaudio;
     config->view_only = app_config->viewonly;
+    config->disable_touch = app_config->disable_touch;
     config->sops = app_config->sops;
     if (app_config->stick_deadzone < 0) {
         config->stick_deadzone = 0;

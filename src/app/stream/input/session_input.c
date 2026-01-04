@@ -26,6 +26,7 @@ void session_input_init(stream_input_t *input, session_t *session, app_input_t *
     input->session = session;
     input->input = app_input;
     input->view_only = config->view_only;
+    input->disable_touch = config->disable_touch;
     input->stick_deadzone = config->stick_deadzone;
     input->no_sdl_mouse = config->hardware_mouse;
 #if FEATURE_INPUT_EVMOUSE

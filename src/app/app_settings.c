@@ -64,6 +64,7 @@ void settings_initialize(app_settings_t *config, char *conf_dir) {
     config->unsupported = true;
     config->quitappafter = false;
     config->viewonly = false;
+    config->disable_touch = false;
     config->rotate = 0;
     config->absmouse = true;
     config->virtual_mouse = false;
@@ -107,6 +108,7 @@ bool settings_save(app_settings_t *config) {
     ini_write_bool(fp, "localaudio", config->localaudio);
     ini_write_bool(fp, "quitappafter", config->quitappafter);
     ini_write_bool(fp, "viewonly", config->viewonly);
+    ini_write_bool(fp, "disable_touch", config->disable_touch);
 
     ini_write_section(fp, "input");
     ini_write_bool(fp, "absmouse", config->absmouse);
@@ -252,6 +254,8 @@ static int settings_parse(app_settings_t *config, const char *section, const cha
         config->viewonly = INI_IS_TRUE(value);
     } else if (INI_NAME_MATCH("absmouse")) {
         config->absmouse = INI_IS_TRUE(value);
+    } else if (INI_NAME_MATCH("disable_touch")) {
+        config->disable_touch = INI_IS_TRUE(value);
     } else if (INI_NAME_MATCH("virtual_mouse")) {
         config->virtual_mouse = INI_IS_TRUE(value);
     } else if (INI_NAME_MATCH("hardware_mouse")) {
