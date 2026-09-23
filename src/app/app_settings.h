@@ -71,6 +71,7 @@ extern const size_t audio_config_len;
 
 #define CONF_NAME_MOONLIGHT "moonlight.ini"
 #define CONF_NAME_HOSTS "hosts.ini"
+#define CONF_NAME_HOSTS_OVERRIDE "hosts.ini.override"
 
 #define RES_MERGE(w, h) (((w) & 0xFFFF) << 16 | ((h) & 0xFFFF))
 

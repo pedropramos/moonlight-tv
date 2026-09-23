@@ -3,6 +3,8 @@
 #include "pclist.h"
 #include "app.h"
 
+#include <unistd.h>
+
 #include <ini.h>
 
 #include "ini_writer.h"
@@ -29,7 +31,11 @@ static int known_hosts_find_uuid(known_host_t *node, void *v);
 
 void pcmanager_load_known_hosts(pcmanager_t *manager) {
     commons_log_info("PCManager", "Load unknown hosts");
-    char *conf_file = path_join(manager->app->settings.conf_dir, CONF_NAME_HOSTS);
+    char *conf_file = path_join(manager->app->settings.conf_dir, CONF_NAME_HOSTS_OVERRIDE);
+    if (access(conf_file, F_OK) != 0) {
+        free(conf_file);
+        conf_file = path_join(manager->app->settings.conf_dir, CONF_NAME_HOSTS);
+    }
     known_host_t *hosts = known_hosts_parse(conf_file);
 
     bool selected_set = false;
